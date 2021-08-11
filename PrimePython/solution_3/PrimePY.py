@@ -3,6 +3,7 @@ Python Prime Sieve using Numpy
 
 Based on MyFirstPython Program (tm) Dave Plummer 8/9/2018
 Adapted by Emil Sauer Lynge 08/07/2021
+Adapted by Chad Foster 08/11/2021
 
 This particular version is based on the PrimePython/solution2, which itself is adapted from Dave Plummer original.
 """
@@ -46,34 +47,16 @@ class PrimeSieve:
     def run_sieve(self):
 
         """Calculate the primes up to the specified limit"""
-
-        factor = 1
-
-
-        # sqrt doesn't seem to make any difference in CPython,
-        # but works much faster than "x**.5" in Pypy
-        q = sqrt(self._size) / 2
-
-
-        bits_view = self._bits[factor:]
-        while factor <= q:
-            for v in bits_view.flat:
-                if v:
-                    break
-                factor += 1
-
-            bits_view = self._bits[factor + 1:]
-
-            # If marking factor 3, you wouldn't mark 6 (it's a mult of 2) so start with the 3rd instance of this factor's multiple.
-            # We can then step by factor * 2 because every second one is going to be even by definition
-            factor2 = 2 * factor
-            start = factor2 * (factor + 1) - factor - 1
-            step = factor2 + 1
-
-            # mark non-primes in sieve
-            bits_view[start::step] = False
-
-            factor += 1
+        
+        q = int(sqrt(self._size) / 2)
+        
+        # Reduce conditional checks - once through
+        for factor in range(1,q+1):
+            if(self._bits[factor]):
+                prime = factor + factor +1
+                start = (prime*prime-1)//2
+                self._bits[start::prime] = False
+        
 
     def count_primes(self):
 
